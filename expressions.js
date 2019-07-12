@@ -23,10 +23,10 @@ class Operation extends Expression {
 }
 
 class Let extends Expression {
-  constructor(variable, assignExpr, inExpr) {
+  constructor(variable, headExpr, bodyExpr) {
     this.variable = variable;
-    this.assignExpr = assignExpr;
-    this.inExpr = inExpr;
+    this.headExpr = headExpr;
+    this.bodyExpr = bodyExpr;
   }
 }
 
