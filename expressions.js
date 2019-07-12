@@ -1,33 +1,33 @@
 'use strict';
 
-class Expression {}
+const Expression = Object.freeze({});
 
-class Literal extends Expression {
-  constructor(value) {
-    this.value = value;
-  }
-}
+const Literal = value =>
+  Object.freeze({
+    value,
+    __proto__: Expression,
+  });
 
-class Var extends Expression {
-  constructor(variable) {
-    this.variable = variable;
-  }
-}
+const Var = identifier =>
+  Object.freeze({
+    identifier,
+    __proto__: Expression,
+  });
 
-class Operation extends Expression {
-  constructor(leftExpr, op, rightExpr) {
-    this.leftExpr = leftExpr;
-    this.op = op;
-    this.rightExpr = rightExpr;
-  }
-}
+const Operation = (leftExpr, op, rightExpr) =>
+  Object.freeze({
+    leftExpr,
+    op,
+    rightExpr,
+    __proto__: Expression,
+  });
 
-class Let extends Expression {
-  constructor(variable, headExpr, bodyExpr) {
-    this.variable = variable;
-    this.headExpr = headExpr;
-    this.bodyExpr = bodyExpr;
-  }
-}
+const Let = (identifier, headExpr, bodyExpr) =>
+  Object.freeze({
+    identifier,
+    headExpr,
+    bodyExpr,
+    __proto__: Expression,
+  });
 
 module.exports = { Expression, Literal, Var, Operation, Let };
