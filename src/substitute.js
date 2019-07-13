@@ -7,7 +7,7 @@ const { isLiteral, isOperation, isVariable } = require('./is');
 const substitute = (value, name, expr) => {
   if (isLiteral(expr)) return expr;
   if (isVariable(expr)) {
-    if (expr.name !== name) throw new Error('Different names');
+    if (expr.name !== name) return expr;
     return value;
   }
   if (isOperation(expr)) {

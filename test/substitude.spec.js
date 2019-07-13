@@ -22,12 +22,12 @@ test('Should replace the variable with the same name', () => {
   expect(result).toEqual(new Literal(10));
 });
 
-test('Should throw an error when the variables have different names', () => {
+test('Should return the varible expresssion when a variables have different names', () => {
   // let x = 10 in y
   const [name, another] = ['x', 'y'];
   const value = new Literal(10);
   const expr = new Var(another);
-  expect(() => substitute(value, name, expr)).toThrowError(Error);
+  expect(substitute(value, name, expr)).toEqual(expr);
 });
 
 test('Should replace the variable in the operation expression', () => {
