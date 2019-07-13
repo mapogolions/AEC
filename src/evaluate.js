@@ -5,9 +5,10 @@ const { Let, Var, Literal, Operation } = require('./expressions');
 
 const evaluate = expr => {
   if (expr instanceof Operation) {
-    const { value: a } = evaluate(expr.leftExpr);
-    const { value: b } = evaluate(expr.rightExpr);
-    return apply(expr.op, a, b);
+    const { leftExpr, op, rightExpr } = expr;
+    const leftValue = evaluate(leftExpr);
+    const rightValue = evaluate(rightExpr);
+    return apply(op, leftValue, rightValue);
   }
   return expr;
 };

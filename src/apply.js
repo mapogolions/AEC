@@ -3,7 +3,7 @@
 const { Literal } = require('./expressions');
 const { ADD, SUB, MUL, DIV } = require('./operations');
 
-const apply = (op, a, b) => {
+const apply = (op, { value: a }, { value: b }) => {
   switch (op) {
     case ADD:
       return new Literal(a + b);
