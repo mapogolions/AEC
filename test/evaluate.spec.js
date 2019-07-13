@@ -1,6 +1,6 @@
 'use strict';
 
-const { Var, Let, Literal, Operation } = require('../src/expressions');
+const { Literal, Operation } = require('../src/expressions');
 const { ADD, SUB, MUL, DIV } = require('../src/operations');
 const evaluate = require('../src/evaluate');
 
