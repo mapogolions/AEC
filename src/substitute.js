@@ -1,16 +1,16 @@
 'use strict';
 
-const { Var, Operation } = require('./expressions');
-const isValue = require('./isValue');
+const { Operation } = require('./expressions');
+const { isLiteral, isOperation, isVariable } = require('./is');
 
 // value -> variable -> expr -> expr
 const substitute = (value, name, expr) => {
-  if (isValue(expr)) return expr;
-  if (expr instanceof Var) {
+  if (isLiteral(expr)) return expr;
+  if (isVariable(expr)) {
     if (expr.name !== name) throw new Error('Different names');
     return value;
   }
-  if (expr instanceof Operation) {
+  if (isOperation(expr)) {
     const { leftExpr, op, rightExpr } = expr;
     const newLeftExpr = substitute(value, name, leftExpr);
     const newRightExpr = substitute(value, name, rightExpr);
