@@ -1,8 +1,8 @@
 'use strict';
 
-const PLUS = Symbol('PLUS');
-const MINUS = Symbol('MINUS');
-const TIMES = Symbol('TIMES');
-const DIV = Symbol('DIV');
+const ADD = Symbol('ADDITION');
+const SUB = Symbol('SUBTRACTION');
+const MUL = Symbol('MULTIPLICATION');
+const DIV = Symbol('DIVISION');
 
-module.exports = { PLUS, MINUS, TIMES, DIV };
+module.exports = { ADD, SUB, MUL, DIV };
