@@ -3,11 +3,9 @@
 const { Operation } = require('./expressions');
 const { isLiteral, isOperation, isVariable } = require('./is');
 
-// value -> variable -> expr -> expr
 const substitute = (value, name, expr) => {
   if (isLiteral(expr)) return expr;
-  if (isVariable(expr)) {
-    if (expr.name !== name) return expr;
+  if (isVariable(expr) && expr.name === name) {
     return value;
   }
   if (isOperation(expr)) {
@@ -16,7 +14,7 @@ const substitute = (value, name, expr) => {
     const newRightExpr = substitute(value, name, rightExpr);
     return new Operation(newLeftExpr, op, newRightExpr);
   }
-  return undefined;
+  return expr;
 };
 
 module.exports = substitute;
