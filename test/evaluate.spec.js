@@ -1,12 +1,17 @@
 'use strict';
 
-const { Literal, Operation } = require('../src/expressions');
+const { Var, Literal, Operation } = require('../src/expressions');
 const { ADD, SUB, MUL, DIV } = require('../src/operations');
 const evaluate = require('../src/evaluate');
 
 test('Should return the same value when expression is a literal', () => {
   const expr = new Literal(10);
   expect(evaluate(expr)).toEqual(expr);
+});
+
+test('Should throw an error whe expression is unbound variable', () => {
+  const expr = new Var('x');
+  expect(() => evaluate(expr)).toThrowError(Error);
 });
 
 test('Should return the reduced literal when operation doing over literals', () => {
