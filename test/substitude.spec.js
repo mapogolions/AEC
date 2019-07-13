@@ -35,7 +35,7 @@ test('Should replace the variable in the operation expression', () => {
     {
       // let x = 2 in x + 1
       name: 'x',
-      bindedValue: new Literal(2),
+      value: new Literal(2),
       freeValue: new Literal(1),
 
       get expr() {
@@ -44,14 +44,14 @@ test('Should replace the variable in the operation expression', () => {
       },
 
       get expected() {
-        const { bindedValue, freeValue } = this;
-        return new Operation(bindedValue, ADD, freeValue);
+        const { value, freeValue } = this;
+        return new Operation(value, ADD, freeValue);
       },
     },
     {
       // let x = -2 in 10 - x
       name: 'y',
-      bindedValue: new Literal(-2),
+      value: new Literal(-2),
       freeValue: new Literal(10),
 
       get expr() {
@@ -60,14 +60,14 @@ test('Should replace the variable in the operation expression', () => {
       },
 
       get expected() {
-        const { bindedValue, freeValue } = this;
-        return new Operation(freeValue, SUB, bindedValue);
+        const { value, freeValue } = this;
+        return new Operation(freeValue, SUB, value);
       },
     },
     {
       // let x = 10 in x * x
       name: 'x',
-      bindedValue: new Literal(10),
+      value: new Literal(10),
 
       get expr() {
         const { name } = this;
@@ -75,14 +75,14 @@ test('Should replace the variable in the operation expression', () => {
       },
 
       get expected() {
-        const { bindedValue } = this;
-        return new Operation(bindedValue, MUL, bindedValue);
+        const { value } = this;
+        return new Operation(value, MUL, value);
       },
     },
     {
-      // let z = 10 in (z - (-2)) + z
-      name: 'z',
-      bindedValue: new Literal(10),
+      // let x = 10 in (x - (-2)) + x
+      name: 'x',
+      value: new Literal(10),
       freeValue: new Literal(-2),
 
       get expr() {
@@ -95,18 +95,14 @@ test('Should replace the variable in the operation expression', () => {
       },
 
       get expected() {
-        const { bindedValue, freeValue } = this;
-        return new Operation(
-          new Operation(bindedValue, SUB, freeValue),
-          ADD,
-          bindedValue,
-        );
+        const { value, freeValue } = this;
+        return new Operation(new Operation(value, SUB, freeValue), ADD, value);
       },
     },
   ];
 
-  testCases.forEach(({ bindedValue, name, expr, expected }) => {
-    const result = substitute(bindedValue, name, expr);
+  testCases.forEach(({ value, name, expr, expected }) => {
+    const result = substitute(value, name, expr);
     expect(result).toEqual(expected);
   });
 });
