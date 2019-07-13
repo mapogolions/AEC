@@ -10,9 +10,9 @@ class Literal extends Expression {
 }
 
 class Var extends Expression {
-  constructor(identifier) {
+  constructor(name) {
     super();
-    this.identifier = identifier;
+    this.name = name;
   }
 }
 
@@ -26,9 +26,9 @@ class Operation extends Expression {
 }
 
 class Let extends Expression {
-  constructor(identifier, headExpr, bodyExpr) {
+  constructor(name, headExpr, bodyExpr) {
     super();
-    this.identifier = identifier;
+    this.name = name;
     this.headExpr = headExpr;
     this.bodyExpr = bodyExpr;
   }
