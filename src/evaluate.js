@@ -1,7 +1,8 @@
 'use strict';
 
 const apply = require('./apply');
-const { isVariable, isOperation } = require('./is');
+const substitute = require('./substitute');
+const { isLetIn, isVariable, isOperation } = require('./is');
 
 const evaluate = expr => {
   if (isOperation(expr)) {
@@ -11,7 +12,12 @@ const evaluate = expr => {
     return apply(op, leftValue, rightValue);
   }
   if (isVariable(expr)) {
-    throw new Error('Unboud variable');
+    throw new Error('Unbound variable');
+  }
+  if (isLetIn(expr)) {
+    const { name, headExpr, bodyExpr } = expr;
+    const headValue = evaluate(headExpr);
+    return evaluate(substitute(headValue, name, bodyExpr));
   }
   return expr;
 };
