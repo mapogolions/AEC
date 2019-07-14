@@ -16,7 +16,7 @@ const evaluate = expr => {
   }
   if (isLetIn(expr)) {
     const { name, headExpr, bodyExpr } = expr;
-    const headValue = evaluate(headExpr);
+    const headValue = evaluate(headExpr); // strategy: eager evaluation
     return evaluate(substitute(headValue, name, bodyExpr));
   }
   return expr;
