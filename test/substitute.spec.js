@@ -118,7 +118,7 @@ test('Should replace variable in operation expression', () => {
     {
       /**
        * let x = (let y = 10 in y) in x + x
-       * [name: x; value: let y = 10 in y; expr]
+       * [name: x; value: let y = 10 in y; expr: x + x]
        * -> (let y = 10 in y) + (let y = 10 in y)
        */
       name: 'x',
@@ -169,7 +169,7 @@ test('Should work with nested let-in expression correctly', () => {
     {
       /**
        * let x = 1 + 2 in let y = x + 1 in y * x
-       * [name: x; value: 1 + 2; expr let y = x + 1 in y * x]
+       * [name: x; value: 1 + 2; expr: let y = x + 1 in y * x]
        * -> let y = (1 + 2) + 1 in y * (1 + 2)
        */
       name: 'x',
