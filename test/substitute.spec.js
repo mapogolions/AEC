@@ -13,7 +13,7 @@ test('Should nothing replace', () => {
   expect(result).toEqual(new Literal(11));
 });
 
-test('Should replace the variable with the same name', () => {
+test('Should replace variable with a value when its name matches', () => {
   // let x = 10 in x
   const name = 'x';
   const value = new Literal(10);
@@ -22,7 +22,7 @@ test('Should replace the variable with the same name', () => {
   expect(result).toEqual(new Literal(10));
 });
 
-test('Should return the varible expresssion when a variables have different names', () => {
+test('Should return varible when its name does not matches', () => {
   // let x = 10 in y
   const [name, another] = ['x', 'y'];
   const value = new Literal(10);
@@ -30,7 +30,7 @@ test('Should return the varible expresssion when a variables have different name
   expect(substitute(value, name, expr)).toEqual(expr);
 });
 
-test('Should replace the variable in the operation expression', () => {
+test('Should replace variable in operation expression', () => {
   const testCases = [
     {
       // let x = 2 in x + 1

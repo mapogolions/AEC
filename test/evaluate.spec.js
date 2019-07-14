@@ -4,17 +4,17 @@ const { Var, Literal, Operation } = require('../src/expressions');
 const { ADD, SUB, MUL, DIV } = require('../src/operations');
 const evaluate = require('../src/evaluate');
 
-test('Should return the same value when expression is a literal', () => {
+test('Should return literal', () => {
   const expr = new Literal(10);
   expect(evaluate(expr)).toEqual(expr);
 });
 
-test('Should throw an error whe expression is unbound variable', () => {
+test('Should throw error when expression is unbound variable', () => {
   const expr = new Var('x');
   expect(() => evaluate(expr)).toThrowError(Error);
 });
 
-test('Should return the reduced literal when operation doing over literals', () => {
+test('Should return reduced literal when operation doing over literals', () => {
   const testCases = [
     {
       left: new Literal(-10),
@@ -47,7 +47,7 @@ test('Should return the reduced literal when operation doing over literals', () 
   });
 });
 
-test('Should reduction a nested operation expressions', () => {
+test('Should evaluate nested operations', () => {
   const testCases = [
     {
       left: new Operation(new Literal(1), ADD, new Literal(2)),
