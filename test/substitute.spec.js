@@ -33,7 +33,11 @@ test('Should return varible when its name does not matches', () => {
 test('Should replace variable in operation expression', () => {
   const testCases = [
     {
-      // let x = 2 in x + 1
+      /**
+       * let x = 2 in x + 1
+       * [name: x; value: 2; expr: x + 1]
+       * -> 2 + 1
+       */
       name: 'x',
       value: new Literal(2),
       freeValue: new Literal(1),
@@ -49,7 +53,11 @@ test('Should replace variable in operation expression', () => {
       },
     },
     {
-      // let x = -2 in 10 - x
+      /**
+       * let x = -2 in 10 - x
+       * [name: x; value: -2; expr: 10 - 2]
+       * -> 10 - (-2)
+       */
       name: 'y',
       value: new Literal(-2),
       freeValue: new Literal(10),
@@ -65,7 +73,11 @@ test('Should replace variable in operation expression', () => {
       },
     },
     {
-      // let x = 10 in x * x
+      /**
+       * let x = 10 in x * x
+       * [name: x; value: 10; expr: x * x]
+       * -> 10 * 10
+       */
       name: 'x',
       value: new Literal(10),
 
@@ -80,7 +92,11 @@ test('Should replace variable in operation expression', () => {
       },
     },
     {
-      // let x = 10 in (x - (-2)) + x
+      /**
+       * let x = 10 in (x - (-2)) + x
+       * [name: x; value: 10; expr: (x - (-2)) + x]
+       * -> (10 - (-2)) + 10
+       */
       name: 'x',
       value: new Literal(10),
       freeValue: new Literal(-2),
@@ -97,6 +113,25 @@ test('Should replace variable in operation expression', () => {
       get expected() {
         const { value, freeValue } = this;
         return new Operation(new Operation(value, SUB, freeValue), ADD, value);
+      },
+    },
+    {
+      /**
+       * let x = (let y = 10 in y) in x + x
+       * [name: x; value: let y = 10 in y; expr]
+       * -> (let y = 10 in y) + (let y = 10 in y)
+       */
+      name: 'x',
+      value: new Let('y', new Literal(10), new Var('y')),
+
+      get expr() {
+        const { name } = this;
+        return new Operation(new Var(name), ADD, new Var(name));
+      },
+
+      get expected() {
+        const { value } = this;
+        return new Operation(value, ADD, value);
       },
     },
   ];
