@@ -1,7 +1,7 @@
 'use strict';
 
 const { ADD, SUB, MUL } = require('../src/operations');
-const { Var, Literal, Operation } = require('../src/expressions');
+const { Var, Let, Literal, Operation } = require('../src/expressions');
 const substitute = require('../src/substitute');
 
 test('Should nothing replace', () => {
@@ -104,5 +104,63 @@ test('Should replace variable in operation expression', () => {
   testCases.forEach(({ value, name, expr, expected }) => {
     const result = substitute(value, name, expr);
     expect(result).toEqual(expected);
+  });
+});
+
+test('Should implement scoping rules correctly', () => {
+  /**
+   * let x = 12 in let x = x * x in x
+   * [name: x; value: 12; expr: let x = x * x in x]
+   * -> let x = 12 * 12 in x
+   * WRONG: let x = 12 * 12 in 12
+   */
+  const name = 'x';
+  const value = new Literal(12);
+  const expr = new Let(
+    name,
+    new Operation(new Var(name), MUL, new Var(name)),
+    new Var(name),
+  );
+  const expected = new Let(
+    name,
+    new Operation(value, MUL, value),
+    new Var(name),
+  );
+  expect(substitute(value, name, expr)).toEqual(expected);
+});
+
+test('Should work with nested let-in expression correctly', () => {
+  const testCases = [
+    {
+      /**
+       * let x = 1 + 2 in let y = x + 1 in y * x
+       * [name: x; value: 1 + 2; expr let y = x + 1 in y * x]
+       * -> let y = (1 + 2) + 1 in y * (1 + 2)
+       */
+      name: 'x',
+      value: new Operation(new Literal(1), ADD, new Literal(2)),
+
+      get expr() {
+        const { name } = this;
+        return new Let(
+          'y',
+          new Operation(new Var(name), ADD, new Literal(1)),
+          new Operation(new Var('y'), MUL, new Var(name)),
+        );
+      },
+
+      get expected() {
+        const { value } = this;
+        return new Let(
+          'y',
+          new Operation(value, ADD, new Literal(1)),
+          new Operation(new Var('y'), MUL, value),
+        );
+      },
+    },
+  ];
+
+  testCases.forEach(({ name, value, expr, expected }) => {
+    expect(substitute(value, name, expr)).toEqual(expected);
   });
 });
