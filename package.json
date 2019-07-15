@@ -7,7 +7,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "format": "prettier *.js src/*.js test/*.js --write",
-    "checkstyle": "prettier *.js src/*.js test/*.js --check"
+    "checkstyle": "prettier *.js src/*.js test/*.js --check",
+    "test:coveralls": "jest --coverage --coverageReporters=text-lcov | coveralls"
   },
   "keywords": [],
   "author": "mapogolions",
