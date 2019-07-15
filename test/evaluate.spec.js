@@ -89,6 +89,8 @@ test('Should evaluate let-in expression', () => {
     {
       /**
        * let x = 12 in x
+       * eval(12) = 12, then substitute
+       * 12
        * -> 12
        */
       expr: new Let('x', new Literal(12), new Var('x')),
@@ -97,7 +99,8 @@ test('Should evaluate let-in expression', () => {
     {
       /**
        * let x = 12 in x * x
-       * -> 12 * 12
+       * eval(12) = 12, then substitute
+       * 12 * 12
        * -> 144
        */
       expr: new Let(
@@ -183,5 +186,34 @@ test('Should evaluate let-in expression', () => {
 
   testCases.forEach(({ expr, expected }) => {
     expect(evaluate(expr)).toEqual(expected);
+  });
+});
+
+test('Should throw error when nested let-in expression has unbound variable', () => {
+  const testCases = [
+    {
+      /**
+       * let x = x + 1 in x
+       * eval(x + 1) = unbound variable
+       */
+      expr: new Let(
+        'x',
+        new Operation(new Var('x'), ADD, new Literal(1)),
+        new Var('x'),
+      ),
+      expectedFailure: Error,
+    },
+    {
+      /**
+       * let x = y in x
+       * eval(y) - unbound variable
+       */
+      expr: new Let('x', new Var('y'), new Var('x')),
+      expectedFailure: Error,
+    },
+  ];
+
+  testCases.forEach(({ expr, expectedFailure }) => {
+    expect(() => evaluate(expr)).toThrowError(expectedFailure);
   });
 });
