@@ -194,7 +194,7 @@ test('Should throw error when nested let-in expression has unbound variable', ()
     {
       /**
        * let x = x + 1 in x
-       * eval(x + 1) = unbound variable
+       * eval(x + 1) - unbound variable
        */
       expr: new Let(
         'x',
@@ -211,9 +211,79 @@ test('Should throw error when nested let-in expression has unbound variable', ()
       expr: new Let('x', new Var('y'), new Var('x')),
       expectedFailure: Error,
     },
+    {
+      /**
+       * let x = (let y = 10 + 1 in y * y) in y
+       * eval(let y = 10 + 1 in y * y) =
+       *      eval(10 + 1) = 11, then substitute
+       *      11 * 11
+       *      -> 121, then substitute
+       * y
+       * eval(y) - unbound variable
+       */
+      expr: new Let(
+        'x',
+        new Let(
+          'y',
+          new Operation(new Literal(10), ADD, new Literal(1)),
+          new Operation(new Var('y'), MUL, new Var('y')),
+        ),
+        new Var('y'),
+      ),
+      expectedFailure: Error,
+    },
+    {
+      /**
+       * let x = (let y = x in y) in in x
+       * eval(let y = x in y) =
+       *      eval(x) - unbound variable
+       */
+      expr: new Let(
+        'x',
+        new Let('y', new Var('x'), new Var('y')),
+        new Var('x'),
+      ),
+      expectedFailure: Error,
+    },
   ];
 
   testCases.forEach(({ expr, expectedFailure }) => {
     expect(() => evaluate(expr)).toThrowError(expectedFailure);
+  });
+});
+
+test('Should handle let-in as head expression of another let-in', () => {
+  const testCases = [
+    {
+      /**
+       * let x = (let y = 10 + 1 in y * y) in let z = 21 in x - z
+       * eval(let y = 10 + 1 in y * y) =
+       *      eval(10 + 1) = 11, then substitute
+       *      11 * 11
+       *      -> 121, then substitute
+       * let z = 21 in 121 - z
+       * eval(21) = 21, then substitute
+       * 121 - 21
+       * -> 100
+       */
+      expr: new Let(
+        'x',
+        new Let(
+          'y',
+          new Operation(new Literal(10), ADD, new Literal(1)),
+          new Operation(new Var('y'), MUL, new Var('y')),
+        ),
+        new Let(
+          'z',
+          new Literal(21),
+          new Operation(new Var('x'), SUB, new Var('z')),
+        ),
+      ),
+      expected: new Literal(100),
+    },
+  ];
+
+  testCases.forEach(({ expr, expected }) => {
+    expect(evaluate(expr)).toEqual(expected);
   });
 });
