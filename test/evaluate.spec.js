@@ -41,6 +41,7 @@ test('Should return reduced literal when operation doing over literals', () => {
       expected: new Literal(3),
     },
   ];
+
   testCases.forEach(({ left, right, op, expected }) => {
     const expr = new Operation(left, op, right);
     expect(evaluate(expr)).toEqual(expected);
@@ -78,6 +79,7 @@ test('Should evaluate nested operations', () => {
       expected: new Literal(6),
     },
   ];
+
   testCases.forEach(({ left, op, right, expected }) => {
     const expr = new Operation(left, op, right);
     expect(evaluate(expr)).toEqual(expected);

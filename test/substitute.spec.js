@@ -151,16 +151,19 @@ test('Should implement scoping rules correctly', () => {
    */
   const name = 'x';
   const value = new Literal(12);
+
   const expr = new Let(
     name,
     new Operation(new Var(name), MUL, new Var(name)),
     new Var(name),
   );
+
   const expected = new Let(
     name,
     new Operation(value, MUL, value),
     new Var(name),
   );
+
   expect(substitute(value, name, expr)).toEqual(expected);
 });
 
