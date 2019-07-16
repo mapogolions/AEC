@@ -1,6 +1,6 @@
 'use strict';
 
-const { Var, Let, Literal, Operation } = require('../src/expressions');
+const { Var, Let, Literal, Operation, Lambda } = require('../src/expressions');
 const { ADD, SUB, MUL, DIV } = require('../src/operations');
 const evaluate = require('../src/evaluate');
 
@@ -288,4 +288,9 @@ test('Should handle let-in as head expression of another let-in', () => {
   testCases.forEach(({ expr, expected }) => {
     expect(evaluate(expr)).toEqual(expected);
   });
+});
+
+test('Should treat lambda as first class citizen object', () => {
+  const fn = new Lambda('x', new Operation(new Var('x'), ADD, new Var('x')));
+  expect(evaluate(fn)).toEqual(fn);
 });
