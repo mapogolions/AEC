@@ -34,4 +34,12 @@ class Let extends Expression {
   }
 }
 
-module.exports = { Expression, Literal, Var, Operation, Let };
+class Lambda extends Expression {
+  constructor(parameter, expr) {
+    super();
+    this.parameter = parameter;
+    this.expr = expr;
+  }
+}
+
+module.exports = { Expression, Literal, Var, Operation, Let, Lambda };
