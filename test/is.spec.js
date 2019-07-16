@@ -1,12 +1,12 @@
 'use strict';
 
-const { Literal, Var, Let, Operation, Lambda } = require('../src/expressions');
+const { Literal, Var, Let, Operation, Fun } = require('../src/expressions');
 const {
   isLiteral,
   isVariable,
   isLetIn,
   isOperation,
-  isLambda,
+  isFun,
 } = require('../src/is');
 
 test('Should check type of expressions', () => {
@@ -14,5 +14,5 @@ test('Should check type of expressions', () => {
   expect(isVariable(new Var('x'))).toBe(true);
   expect(isLetIn(new Let('x', 'expr', 'expr'))).toBe(true);
   expect(isOperation(new Operation('expr', 'op', 'expr'))).toBe(true);
-  expect(isLambda(new Lambda('x', 'expr'))).toBe(true);
+  expect(isFun(new Fun('x', 'expr'))).toBe(true);
 });

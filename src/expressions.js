@@ -34,7 +34,7 @@ class Let extends Expression {
   }
 }
 
-class Lambda extends Expression {
+class Fun extends Expression {
   constructor(parameter, expr) {
     super();
     this.parameter = parameter;
@@ -42,4 +42,4 @@ class Lambda extends Expression {
   }
 }
 
-module.exports = { Expression, Literal, Var, Operation, Let, Lambda };
+module.exports = { Expression, Literal, Var, Operation, Let, Fun };
