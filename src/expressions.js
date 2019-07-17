@@ -42,4 +42,12 @@ class Fun extends Expression {
   }
 }
 
-module.exports = { Expression, Literal, Var, Operation, Let, Fun };
+class FunCall extends Expression {
+  constructor(callable, arg) {
+    super();
+    this.callable = callable;
+    this.arg = arg;
+  }
+}
+
+module.exports = { Expression, Literal, Var, Operation, Let, Fun, FunCall };
