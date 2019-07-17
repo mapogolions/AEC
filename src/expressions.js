@@ -35,18 +35,18 @@ class Let extends Expression {
 }
 
 class Fun extends Expression {
-  constructor(param, expr) {
+  constructor(param, bodyExpr) {
     super();
     this.param = param;
-    this.expr = expr;
+    this.bodyExpr = bodyExpr;
   }
 }
 
 class FunCall extends Expression {
-  constructor(callable, arg) {
+  constructor(funExpr, argExpr) {
     super();
-    this.callable = callable;
-    this.arg = arg;
+    this.funExpr = funExpr;
+    this.argExpr = argExpr;
   }
 }
 

@@ -1,6 +1,13 @@
 'use strict';
 
-const { Var, Let, Literal, Operation, Fun } = require('../src/expressions');
+const {
+  Var,
+  Let,
+  Literal,
+  Operation,
+  Fun,
+  FunCall,
+} = require('../src/expressions');
 const { ADD, SUB, MUL, DIV } = require('../src/operations');
 const evaluate = require('../src/evaluate');
 
@@ -293,4 +300,35 @@ test('Should handle let-in as head expression of another let-in', () => {
 test('Should treat lambda as first class object', () => {
   const fn = new Fun('x', new Operation(new Var('x'), ADD, new Var('x')));
   expect(evaluate(fn)).toEqual(fn);
+});
+
+test('Should return result of function call', () => {
+  const testCases = [
+    {
+      arg: new Literal(10),
+      fn: new Fun('x', new Var('x')),
+      get expected() {
+        return this.arg;
+      },
+    },
+    {
+      arg: new Let(
+        'y',
+        new Operation(new Literal(3), ADD, new Literal(2)),
+        new Var('y'),
+      ),
+      fn: new Fun('n', new Operation(new Var('n'), MUL, new Var('n'))),
+      expected: new Literal(25),
+    },
+  ];
+
+  testCases.forEach(({ fn, arg, expected }) => {
+    const result = evaluate(new FunCall(fn, arg));
+    expect(result).toEqual(expected);
+  });
+});
+
+test('Should throw type error when callee is not function', () => {
+  const expr = new FunCall(new Literal(10), new Literal(10));
+  expect(() => evaluate(expr)).toThrowError(TypeError);
 });

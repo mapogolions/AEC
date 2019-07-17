@@ -2,7 +2,7 @@
 
 const apply = require('./apply');
 const substitute = require('./substitute');
-const { isLetIn, isVariable, isOperation } = require('./is');
+const { isLetIn, isVariable, isOperation, isFun, isFunCall } = require('./is');
 
 const evaluate = expr => {
   if (isOperation(expr)) {
@@ -18,6 +18,14 @@ const evaluate = expr => {
     const { name, headExpr, bodyExpr } = expr;
     const headValue = evaluate(headExpr); // strategy: eager evaluation
     return evaluate(substitute(headValue, name, bodyExpr));
+  }
+  if (isFunCall(expr)) {
+    const { funExpr, argExpr } = expr;
+    const fn = evaluate(funExpr);
+    if (!isFun(fn)) throw new TypeError();
+    const { param, bodyExpr } = fn;
+    const value = evaluate(argExpr);
+    return evaluate(substitute(value, param, bodyExpr));
   }
   return expr;
 };
