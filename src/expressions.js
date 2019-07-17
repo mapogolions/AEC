@@ -35,9 +35,9 @@ class Let extends Expression {
 }
 
 class Fun extends Expression {
-  constructor(parameter, expr) {
+  constructor(param, expr) {
     super();
-    this.parameter = parameter;
+    this.param = param;
     this.expr = expr;
   }
 }
