@@ -2,6 +2,7 @@
 
 const apply = require('./apply');
 const substitute = require('./substitute');
+const { Fun, FunCall } = require('./expressions');
 const { isLetIn, isVariable, isOperation, isFun, isFunCall } = require('./is');
 
 const evaluate = expr => {
@@ -16,8 +17,7 @@ const evaluate = expr => {
   }
   if (isLetIn(expr)) {
     const { name, headExpr, bodyExpr } = expr;
-    const headValue = evaluate(headExpr); // strategy: eager evaluation
-    return evaluate(substitute(headValue, name, bodyExpr));
+    return evaluate(new FunCall(new Fun(name, bodyExpr), headExpr));
   }
   if (isFunCall(expr)) {
     const { funExpr, argExpr } = expr;
