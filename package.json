@@ -1,7 +1,7 @@
 {
-  "name": "calculator",
+  "name": "evaluation-model",
   "version": "1.0.0",
-  "description": "",
+  "description": "OCaml evaluation model",
   "main": "index.js",
   "scripts": {
     "test": "jest",
@@ -10,7 +10,7 @@
     "checkstyle": "prettier *.js src/*.js test/*.js --check",
     "test:coveralls": "jest --coverage --coverageReporters=text-lcov | coveralls"
   },
-  "keywords": [],
+  "keywords": ["Eager evaluation", "OCaml evaluation model"],
   "author": "mapogolions",
   "license": "MIT",
   "devDependencies": {
