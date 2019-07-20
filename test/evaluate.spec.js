@@ -297,9 +297,25 @@ test('Should handle let-in as head expression of another let-in', () => {
   });
 });
 
-test('Should treat lambda as first class object', () => {
-  const fn = new Fun('x', new Operation(new Var('x'), ADD, new Var('x')));
-  expect(evaluate(fn)).toEqual(fn);
+test('Should treat function as first class object', () => {
+  const testCases = [
+    {
+      expr: new Fun('x', new Operation(new Var('x'), ADD, new Var('x'))),
+      get expected() {
+        return this.expr;
+      },
+    },
+    {
+      expr: new Let('f', new Fun('x', new Var('x')), new Var('f')),
+      get expected() {
+        return this.expr.headExpr;
+      },
+    },
+  ];
+
+  testCases.forEach(({ expr, expected }) => {
+    expect(evaluate(expr)).toEqual(expected);
+  });
 });
 
 test('Should return result of function call', () => {
