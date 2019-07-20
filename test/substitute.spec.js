@@ -1,7 +1,14 @@
 'use strict';
 
 const { ADD, SUB, MUL } = require('../src/operations');
-const { Var, Let, Literal, Operation } = require('../src/expressions');
+const {
+  Var,
+  Let,
+  Literal,
+  Operation,
+  Fun,
+  FunCall,
+} = require('../src/expressions');
 const substitute = require('../src/substitute');
 
 test('Should nothing replace', () => {
@@ -199,6 +206,55 @@ test('Should work with nested let-in expression correctly', () => {
   ];
 
   testCases.forEach(({ name, value, expr, expected }) => {
+    expect(substitute(value, name, expr)).toEqual(expected);
+  });
+});
+
+test('Should work with function call correctly', () => {
+  const increment = new Fun(
+    'x',
+    new Operation(new Var('x'), ADD, new Literal(1)),
+  );
+  const square = new Fun('x', new Operation(new Var('x'), MUL, new Var('x')));
+
+  const testCases = [
+    {
+      /**
+       * let f = fun x -> x + 1 in f 10
+       * [name: f; value: fun x -> x + 1; expr: f 10]
+       * eval(fun x -> x + 1) = fun x -> x + 1, then substitute
+       * -> (fun x -> x + 1) 10
+       */
+      name: 'f',
+      value: increment,
+      freeValue: new Literal(10),
+      get expr() {
+        const { name, freeValue } = this;
+        return new FunCall(new Var(name), freeValue);
+      },
+      get expected() {
+        const { value, freeValue } = this;
+        return new FunCall(value, freeValue);
+      },
+    },
+    {
+      /**
+       * let g = fun x -> x * x in g
+       * eval(fun x -> x * x), then substitute
+       * -> fun x -> x * x
+       */
+      name: 'g',
+      value: square,
+      get expr() {
+        return new Var('g');
+      },
+      get expected() {
+        return this.value;
+      },
+    },
+  ];
+
+  testCases.forEach(({ value, name, expr, expected }) => {
     expect(substitute(value, name, expr)).toEqual(expected);
   });
 });
