@@ -1,7 +1,13 @@
 'use strict';
 
-const { Let, Operation } = require('./expressions');
-const { isLiteral, isOperation, isVariable, isLetIn } = require('./is');
+const { Let, Operation, FunCall } = require('./expressions');
+const {
+  isLiteral,
+  isOperation,
+  isVariable,
+  isLetIn,
+  isFunCall,
+} = require('./is');
 
 const substitute = (value, name, expr) => {
   if (isLiteral(expr)) return expr;
@@ -10,9 +16,11 @@ const substitute = (value, name, expr) => {
   }
   if (isOperation(expr)) {
     const { leftExpr, op, rightExpr } = expr;
-    const newLeftExpr = substitute(value, name, leftExpr);
-    const newRightExpr = substitute(value, name, rightExpr);
-    return new Operation(newLeftExpr, op, newRightExpr);
+    return new Operation(
+      substitute(value, name, leftExpr),
+      op,
+      substitute(value, name, rightExpr),
+    );
   }
   if (isLetIn(expr)) {
     return new Let(
@@ -22,6 +30,13 @@ const substitute = (value, name, expr) => {
       expr.name === name
         ? expr.bodyExpr
         : substitute(value, name, expr.bodyExpr),
+    );
+  }
+  if (isFunCall(expr)) {
+    const { funExpr, argExpr } = expr;
+    return new FunCall(
+      substitute(value, name, funExpr),
+      substitute(value, name, argExpr),
     );
   }
   return expr;
