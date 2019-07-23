@@ -374,6 +374,33 @@ test('Should throw type error when callee is not function', () => {
   expect(() => evaluate(expr)).toThrowError(TypeError);
 });
 
+test('Should return partial function', () => {
+  const add = new Fun(
+    'x',
+    new Fun('y', new Operation(new Var('x'), ADD, new Var('y'))),
+  );
+  const addTwo = new FunCall(add, new Literal(2));
+  const expected = new Fun(
+    'y',
+    new Operation(new Literal(2), ADD, new Var('y')),
+  );
+  expect(evaluate(addTwo)).toEqual(expected);
+  expect(evaluate(new FunCall(addTwo, new Literal(8)))).toEqual(
+    new Literal(10),
+  );
+});
+
+test('Should return partial function without substitution', () => {
+  // shadow
+  const fn = new Fun(
+    'x',
+    new Fun('x', new Operation(new Var('x'), ADD, new Var('x'))),
+  );
+  const partial = new FunCall(fn, new Literal(10));
+  const expected = new Fun('x', new Operation(new Var('x'), ADD, new Var('x')));
+  expect(evaluate(partial)).toEqual(expected);
+});
+
 describe('Should pass function as argument', () => {
   const increment = new Fun(
     'x',

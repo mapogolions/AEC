@@ -1,11 +1,12 @@
 'use strict';
 
-const { Let, Operation, FunCall } = require('./expressions');
+const { Let, Operation, Fun, FunCall } = require('./expressions');
 const {
   isLiteral,
   isOperation,
   isVariable,
   isLetIn,
+  isFun,
   isFunCall,
 } = require('./is');
 
@@ -27,6 +28,15 @@ const subIntoLetIn = (value, name, expr) => {
   );
 };
 
+const subIntoFun = (value, name, expr) => {
+  const { param, bodyExpr } = expr;
+  return new Fun(
+    param,
+    // shadow
+    param === name ? bodyExpr : substitute(value, name, bodyExpr),
+  );
+};
+
 const subIntoFunCall = (value, name, expr) => {
   const { funExpr, argExpr } = expr;
   return new FunCall(
@@ -40,6 +50,7 @@ const substitute = (value, name, expr) => {
   if (isVariable(expr) && expr.name === name) return value;
   if (isOperation(expr)) return subIntoOperation(value, name, expr);
   if (isLetIn(expr)) return subIntoLetIn(value, name, expr);
+  if (isFun(expr)) return subIntoFun(value, name, expr);
   if (isFunCall(expr)) return subIntoFunCall(value, name, expr);
   return expr;
 };
