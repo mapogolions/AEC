@@ -10,12 +10,18 @@
     "checkstyle": "prettier *.js src/*.js test/*.js --check",
     "test:coveralls": "jest --coverage --coverageReporters=text-lcov | coveralls"
   },
-  "keywords": ["Eager evaluation", "OCaml evaluation model"],
+  "keywords": [
+    "Eager evaluation",
+    "OCaml evaluation model"
+  ],
   "author": "mapogolions",
   "license": "MIT",
   "devDependencies": {
     "coveralls": "^3.0.5",
     "jest": "^24.8.0",
     "prettier": "1.18.2"
+  },
+  "dependencies": {
+    "parsimmon": "^1.12.1"
   }
 }
