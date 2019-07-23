@@ -300,12 +300,21 @@ test('Should handle let-in as head expression of another let-in', () => {
 test('Should treat function as first class object', () => {
   const testCases = [
     {
+      /**
+       * (fun x -> x + x)
+       * -> fun x -> x + x
+       */
       expr: new Fun('x', new Operation(new Var('x'), ADD, new Var('x'))),
       get expected() {
         return this.expr;
       },
     },
     {
+      /**
+       * let f = fun x -> x in f
+       * eval(fun x -> x) = fun x -> x
+       * -> fun x -> x
+       */
       expr: new Let('f', new Fun('x', new Var('x')), new Var('f')),
       get expected() {
         return this.expr.headExpr;
@@ -321,7 +330,12 @@ test('Should treat function as first class object', () => {
 test('Should return result of function call', () => {
   const testCases = [
     {
-      // (fun x -> x) 10
+      /**
+       * (fun x -> x) 10
+       * eval(10) = 10, then substitute
+       * 10
+       * -> 10
+       */
       arg: new Literal(10),
       fn: new Fun('x', new Var('x')),
       get expected() {
@@ -329,7 +343,16 @@ test('Should return result of function call', () => {
       },
     },
     {
-      // (fun n -> n * n) (let y = 3 + 2 in y)
+      /**
+       * (fun n -> n * n) (let y = 3 + 2 in y)
+       * eval(let y = 3 + 2 in y) =
+       *      eval(3 + 2) = 5, then substitute
+       *      5
+       *      -> 5
+       * then substitute
+       * 5 * 5
+       * -> 25
+       */
       arg: new Let(
         'y',
         new Operation(new Literal(3), ADD, new Literal(2)),
@@ -351,7 +374,7 @@ test('Should throw type error when callee is not function', () => {
   expect(() => evaluate(expr)).toThrowError(TypeError);
 });
 
-describe('Should undestand high order function', () => {
+describe('Should pass function as argument', () => {
   const increment = new Fun(
     'x',
     new Operation(new Var('x'), ADD, new Literal(1)),
@@ -362,14 +385,18 @@ describe('Should undestand high order function', () => {
   );
 
   test('Should increment value', () => {
-    // (fun f -> f 10) (fun x -> x + 1)
+    /**
+     * (fun f -> f 10) (fun x -> x + 1)
+     */
     const fn = new Fun('f', new FunCall(new Var('f'), new Literal(10)));
     const expr = new FunCall(fn, increment);
     expect(evaluate(expr)).toEqual(new Literal(11));
   });
 
   test('Should increment value twice', () => {
-    // (fun f -> f (f 10)) (fun x -> x + 1)
+    /**
+     * fun f -> f (f 10)) (fun x -> x + 1)
+     */
     const fn = new Fun(
       'f',
       new FunCall(new Var('f'), new FunCall(new Var('f'), new Literal(10))),
@@ -379,7 +406,9 @@ describe('Should undestand high order function', () => {
   });
 
   test('Should decrement value twice', () => {
-    // (fun f -> let x = f 0 in f x) (fun x -> x - 1)
+    /**
+     * (fun f -> let x = f 0 in f x) (fun x -> x - 1)
+     */
     const fn = new Fun(
       'f',
       new Let(
