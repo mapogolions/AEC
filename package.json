@@ -21,7 +21,5 @@
     "jest": "^24.8.0",
     "prettier": "1.18.2"
   },
-  "dependencies": {
-    "parsimmon": "^1.12.1"
-  }
+  "dependencies": {}
 }
