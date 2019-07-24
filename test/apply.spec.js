@@ -23,3 +23,9 @@ test('Should return difference of two numbers', () => {
   const [a, b] = [new Literal(5), new Literal(-1)];
   expect(apply(SUB, a, b)).toEqual(new Literal(6));
 });
+
+test('Should throw error when appear undefined operation', () => {
+  const [a, b] = [new Literal(1), new Literal(2)];
+  const UNDEFINED = Symbol('Undefined operation');
+  expect(() => apply(UNDEFINED, a, b)).toThrowError(Error);
+});
