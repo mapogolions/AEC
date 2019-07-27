@@ -19,11 +19,11 @@ const evalLetIn = expr => {
 
 const evalFunCall = expr => {
   const { funExpr, argExpr } = expr;
-  const fn = evaluate(funExpr);
-  if (!isFun(fn)) throw new TypeError();
-  const { param, bodyExpr } = fn;
-  const value = evaluate(argExpr);
-  return evaluate(substitute(value, param, bodyExpr));
+  const funValue = evaluate(funExpr);
+  if (!isFun(funValue)) throw new TypeError();
+  const { param, bodyExpr } = funValue;
+  const argValue = evaluate(argExpr);
+  return evaluate(substitute(argValue, param, bodyExpr));
 };
 
 const evaluate = expr => {
